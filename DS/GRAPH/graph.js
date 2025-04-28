@@ -40,6 +40,112 @@ class Graph{
             console.log(key,"===>",[...this.adjacencyList[key]].length>0?[...this.adjacencyList[key]]:"no vertexs paired")
         }
     }
+    breadthFirstSearch(start){
+        if(!this.adjacencyList[start]){
+            console.log("start vertex not found")
+            return []
+        }
+        let queue=[start], result=[],visited={}
+        visited[start]=true
+        while(queue.length){
+            let curr=queue.shift()
+            result.push(curr)
+            this.adjacencyList[curr].forEach(neigh=>{
+                if(!visited[neigh]){
+                    visited[neigh]=true
+                    queue.push(neigh)
+                }
+            })
+
+        }
+        return result
+    }
+
+    // hasCycle(){
+    //     let visited={}
+
+        
+
+    //     const dfs=(curr,parent)=>{
+    //         visited[curr]=true
+    //         for(let neigh of this.adjacencyList[curr]){
+    //             if(!visited[neigh]){
+    //                 visited[neigh]=true
+    //                 dfs(neigh,curr)
+    //             }else if(neigh!==parent){
+    //                 return true
+    //             }
+    //         }
+
+    //     }
+    //     for(let vertex in this.adjacencyList){
+    //         if(!visited[vertex]){
+    //             if(dfs(vertex,null)){
+    //                 return true
+    //             }
+    //         }
+    //     }
+    //     return false
+    // }
+    hasCycle() {
+        let visited = {};
+    
+        for (let vertex in this.adjacencyList) {
+            if (!visited[vertex]) {
+                if (this.checkCycleBFS(vertex, visited)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    checkCycleBFS(start, visited) {
+        let queue = [[start, null]];
+    
+        visited[start] = true;
+    
+        while (queue.length) {
+            let [current, parent] = queue.shift();
+    
+            for (let neighbor of this.adjacencyList[current]) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.push([neighbor, current]);
+                } else if (neighbor !== parent) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    numberOfCycles(){
+        let visited={}
+        let count=0
+
+        for(let vertex in this.adjacencyList){
+            if(!visited[vertex]){
+                if(this.dfsCycle(vertex,visited,null)){
+                    count++
+                }
+            }
+        }
+        return count
+    }
+    dfsCycle(current , visited,parent){
+        visited[current]=true
+        for(let neigh of this.adjacencyList[current]){
+            if(!visited[neigh]){
+                if(this.dfsCycle(neigh,visited,current)){
+                    return true
+                }else if(neigh !==parent){
+                    return true
+                }
+            }
+        }
+        return false
+    }
 }
 
 let graph=new Graph()
@@ -48,6 +154,9 @@ graph.addEdge("c","b")
 graph.addEdge("a","c")
 graph.addVertex("e")
 graph.addEdge("e","a")
+// graph.display()
+// graph.removeVertex("a")
 graph.display()
-graph.removeVertex("a")
-graph.display()
+console.log(graph.breadthFirstSearch("a"))
+console.log(graph.hasCycle())
+console.log(graph.numberOfCycles())
