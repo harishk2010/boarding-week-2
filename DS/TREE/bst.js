@@ -72,6 +72,20 @@ class BinarySearchTree {
       console.log(root.value);
     }
   }
+  degreeOfEachNode(root = this.root) {
+    if (!root) return;
+  
+    let degree = 0;
+    if (root.left) degree++;
+    if (root.right) degree++;
+  
+    console.log(`Node ${root.value} has degree: ${degree}`);
+  
+   degree+= this.degreeOfEachNode(root.left);
+   degree+=this.degreeOfEachNode(root.right);
+   return degree
+  }
+  
 
   levelOrder() {
     let queue = [];
@@ -238,6 +252,7 @@ console.log(
 );
 console.log("Heigt of tree>>", bst.heightOfTree());
 console.log("does the tree had this value??>>", bst.has(3));
+console.log("degree of tree>>", bst.degreeOfEachNode());
 // bst.preOrder(bst.root)
 // console.log("---")
 // bst.inOrder(bst.root)
